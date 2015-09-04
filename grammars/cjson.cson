@@ -1,26 +1,54 @@
 'fileTypes': [
-  'babelrc'
-  'bowerrc'
-  'eslintrc'
-  'geojson'
-  'jscsrc'
-  'jshintrc'
-  'jslintrc'
-  'json'
-  'jsonl'
-  'ldj'
-  'ldjson'
-  'schema'
-  'topojson'
-  'webapp'
+  'cjson'
 ]
-'name': 'JSON'
+'name': 'cJSON'
 'patterns': [
   {
     'include': '#value'
   }
 ]
 'repository':
+  'comments':
+    'patterns': [
+      {
+        'begin': '/\\*\\*(?!/)'
+        'captures':
+          '0':
+            'name': 'punctuation.definition.comment.js'
+        'patterns': [
+          {
+            'include': '#docblock'
+          }
+        ]
+        'end': '\\*/'
+        'name': 'comment.block.documentation.js'
+      }
+      {
+        'begin': '/\\*'
+        'captures':
+          '0':
+            'name': 'punctuation.definition.comment.js'
+        'end': '\\*/'
+        'name': 'comment.block.js'
+      }
+      {
+        'begin': '(^[ \\t]+)?(?=//)'
+        'beginCaptures':
+          '1':
+            'name': 'punctuation.whitespace.comment.leading.js'
+        'end': '(?!\\G)'
+        'patterns': [
+          {
+            'begin': '//'
+            'beginCaptures':
+              '0':
+                'name': 'punctuation.definition.comment.js'
+            'end': '\\n'
+            'name': 'comment.line.double-slash.js'
+          }
+        ]
+      }
+    ]
   'array':
     'begin': '\\['
     'beginCaptures':
@@ -66,6 +94,9 @@
       {
         'comment': 'the JSON object key'
         'include': '#string'
+      }
+      {
+        'include': '#comments'
       }
       {
         'begin': ':'
@@ -117,6 +148,9 @@
     'comment': 'the \'value\' diagram at http://json.org'
     'patterns': [
       {
+        'include': '#comments'
+      }
+      {
         'include': '#constant'
       }
       {
@@ -132,4 +166,4 @@
         'include': '#object'
       }
     ]
-'scopeName': 'source.json'
+'scopeName': 'source.cjson'

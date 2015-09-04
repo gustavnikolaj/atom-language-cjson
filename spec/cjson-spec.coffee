@@ -1,19 +1,21 @@
-describe "JSON grammar", ->
+unexpected = require('unexpected')
+
+describe "cJSON grammar", ->
   grammar = null
 
   beforeEach ->
     waitsForPromise ->
-      atom.packages.activatePackage('language-json')
+      atom.packages.activatePackage('language-cjson')
 
     runs ->
-      grammar = atom.grammars.grammarForScopeName('source.json')
+      grammar = atom.grammars.grammarForScopeName('source.cjson')
 
   it "parses the grammar", ->
     expect(grammar).toBeDefined()
-    expect(grammar.scopeName).toBe 'source.json'
+    expect(grammar.scopeName).toBe 'source.cjson'
 
   it "tokenizes arrays", ->
-    baseScopes = ['source.json', 'meta.structure.array.json']
+    baseScopes = ['source.cjson', 'meta.structure.array.json']
     numericScopes = [baseScopes..., 'constant.numeric.json']
     separatorScopes = [baseScopes..., 'punctuation.separator.array.json']
 
@@ -29,7 +31,7 @@ describe "JSON grammar", ->
     expect(tokens[8]).toEqual value: ']', scopes: [baseScopes..., 'punctuation.definition.array.end.json']
 
   it "tokenizes objects", ->
-    baseScopes = ['source.json', 'meta.structure.dictionary.json']
+    baseScopes = ['source.cjson', 'meta.structure.dictionary.json']
     keyScopes = [baseScopes..., 'string.quoted.double.json']
     keyBeginScopes = [keyScopes..., 'punctuation.definition.string.begin.json']
     keyEndScopes = [keyScopes..., 'punctuation.definition.string.end.json']
@@ -65,3 +67,40 @@ describe "JSON grammar", ->
     expect(tokens[23]).toEqual value: 'bar', scopes: stringValueScopes
     expect(tokens[24]).toEqual value: '"', scopes: [stringValueScopes..., 'punctuation.definition.string.end.json']
     expect(tokens[25]).toEqual value: '}', scopes: [baseScopes..., 'punctuation.definition.dictionary.end.json']
+
+  it 'should support comments in json', ->
+    baseScopes = ['source.cjson', 'meta.structure.dictionary.json']
+    commentScopes = [
+      baseScopes...
+      'comment.line.double-slash.js'
+    ]
+    {tokens} = grammar.tokenizeLine('{\n  // foobar\n  "foo": "bar"\n}\n')
+    unexpected(tokens[3], 'to satisfy', {
+      value: '//',
+      scopes: [
+        commentScopes...
+        'punctuation.definition.comment.js'
+      ]
+    })
+    unexpected(tokens[4], 'to satisfy', {
+      value: ' foobar',
+      scopes: commentScopes
+    })
+
+  it 'should support comments before json', ->
+    commentScopes = [
+      'source.cjson'
+      'comment.line.double-slash.js'
+    ]
+    {tokens} = grammar.tokenizeLine('// foobar\n{\n  "foo": "bar"\n}\n')
+    unexpected(tokens[0], 'to satisfy', {
+      value: '//'
+      scopes: [
+        commentScopes...
+        'punctuation.definition.comment.js'
+      ]
+    })
+    unexpected(tokens[1], 'to satisfy', {
+      value: ' foobar'
+      scopes: commentScopes
+    })

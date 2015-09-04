@@ -15,6 +15,7 @@
     "url": "https://github.com/gustavnikolaj/atom-language-cjson/issues"
   },
   "devDependencies": {
-    "coffeelint": "^1.10.1"
+    "coffeelint": "^1.10.1",
+    "unexpected": "9.6.0"
   }
 }
