@@ -1,6 +1,8 @@
-# JSON language support in Atom [![Build Status](https://travis-ci.org/atom/language-json.svg?branch=master)](https://travis-ci.org/atom/language-json)
+# cJSON language support in Atom
 
-Adds syntax highlighting of JSON files in Atom.
+Adds syntax highlighting of cJSON files in Atom.
+
+This language pack is based on the [JSON language pack](http://github.com/atom/language-json.git).
 
 Originally [converted](http://atom.io/docs/latest/converting-a-text-mate-bundle)
 from the [JSON TextMate bundle](https://github.com/textmate/json.tmbundle).
